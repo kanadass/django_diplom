@@ -101,7 +101,7 @@ DATABASES = {
         'NAME': 'django_diplom',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'localhost',  # '127.0.0.1', 'postgres'
+        'HOST': 'postgres',
         'PORT': '5432',
     }
 }
