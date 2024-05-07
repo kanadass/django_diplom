@@ -1,8 +1,57 @@
-version: '3.9'
+version: "3.9"
+x-environment-defaults: &environment-defaults
+  Debug: 'False'
+  POSTGRES_USER: 'postgres'
+  POSTGRES_PASSWORD: 'postgres'
+  POSTGRES_DB: 'django_diplom'
+  POSTGRES_HOST: 'database'
+  POSTGRES_PORT: '5432'
+  CELERY_BROKER_URL: 'redis://redis:6379/0'
+  CELERY_RESULT_BACKEND: 'redis://redis:6379/0'
+  SECRET_KEY: 'django-insecure-o+r_%6!wm^2h2eeo8-4$(x1whx8ai+u&_%=9jtqaq=((vh_h5+'
+
 services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/etc/postgresql.conf"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: django_diplom
+    ports:
+      - "5431:5432"
+
+  orders:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: orders
+    depends_on:
+      - postgres
+    environment:
+      <<: *environment-defaults
+#    network_mode: 'host'
+    ports:
+      - "8000:8000"
 
   redis:
     image: redis:latest
     container_name: redis
     ports:
       - "6379:6379"
+
+  celery:
+    build:
+      context: .
+    command: celery -A orders worker --loglevel=info
+    depends_on:
+      - redis
+#      - postgres
+    environment:
+      <<: *environment-defaults
+
+
