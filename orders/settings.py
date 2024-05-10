@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,10 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
-# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,35 +78,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "orders.wsgi.application"
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': 'django_diplom',
-#     }
-# }
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.getenv('DB_ENGINE'),
-#         'NAME': os.getenv('DB_NAME'),
-#         'HOST': os.getenv('DB_HOST'),
-#         'PORT': os.getenv('DB_PORT'),
-#         'USER': os.getenv('DB_USER'),
-#         'PASSWORD': os.getenv('DB_PASSWORD'),
-#     }
-# }
-#
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_diplom',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'postgres',
-        'PORT': '5432',
+        'ENGINE': os.getenv('DB_ENGINE', default="django.db.backends.sqlite3"),
+        'NAME': os.getenv('DB_NAME', default="db.sqlite3"),
+        'HOST': os.getenv('DB_HOST', default="localhost"),
+        'PORT': os.getenv('DB_PORT', default="5432"),
+        'USER': os.getenv('DB_USER', default="user"),
+        'PASSWORD': os.getenv('DB_PASSWORD', default="password"),
     }
 }
-
 
 
 # Password validation
@@ -180,7 +163,7 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', default="redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', default="redis://localhost:6379/0")
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
