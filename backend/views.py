@@ -298,7 +298,7 @@ class BasketView(APIView):
                - request (Request): The Django request object.
 
                Returns:
-               - JsonResponse: The response indicating the status of the operation and any errors.
+               - JsonResponse: The response indicating the statuяs of the operation and any errors.
                """
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
